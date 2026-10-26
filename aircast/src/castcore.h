@@ -51,6 +51,7 @@ typedef struct sCastCtx {
 	cross_queue_t	eventQueue, reqQueue;
 	double 			mediaVolume;
 	uint32_t		lastPong;
+	uint32_t		waitStamp;
 	bool			group;
 	bool			stopReceiver;
 	uint32_t		caps;

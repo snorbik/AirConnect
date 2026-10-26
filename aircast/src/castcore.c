@@ -35,10 +35,10 @@ static SSL_CTX *glSSLctx;
 static void *CastSocketThread(void *args);
 static void *CastPingThread(void *args);
 
+#define WAIT_TIMEOUT	5000
+
 extern log_level cast_loglevel;
 static log_level *loglevel = &cast_loglevel;
-
-#define WAIT_TIMEOUT	5000
 
 /*----------------------------------------------------------------------------*/
 static void CastExit(void) {
@@ -268,6 +268,7 @@ void CastDisconnect(struct sCastCtx *Ctx) {
 
 	Ctx->reqId = 1;
 	Ctx->waitId = Ctx->waitMedia = Ctx->mediaSessionId = 0;
+	Ctx->waitStamp = 0;
 	Ctx->Status = CAST_DISCONNECTED;
 	NFREE(Ctx->sessionId);
 	NFREE(Ctx->transportId);
@@ -525,8 +526,6 @@ static void ProcessQueue(tCastCtx *Ctx) {
 static void *CastPingThread(void *args) {
 	tCastCtx *Ctx = (tCastCtx*) args;
 	uint32_t last = gettime_ms();
-	uint32_t waitStamp = 0;
-	int lastWaitId = 0;
 
 	Ctx->running = true;
 
@@ -547,20 +546,6 @@ static void *CastPingThread(void *args) {
 
 			// then ping RECEIVER connection
 			if (Ctx->Status == CAST_LAUNCHED) SendCastMessage(Ctx, CAST_BEAT, Ctx->transportId, "{\"type\":\"PING\"}");
-
-			/* A request the device never answers keeps waitId set, so ProcessQueue()
-			   is never called again and every later request (PLAY, LOAD, VOLUME...)
-			   piles up in the queue until the session ends. Release it after a while. */
-			if (Ctx->Status == CAST_LAUNCHED && Ctx->waitId) {
-				if (Ctx->waitId != lastWaitId) {
-					lastWaitId = Ctx->waitId;
-					waitStamp = now;
-				} else if (now - waitStamp > WAIT_TIMEOUT) {
-					LOG_WARN("[%p]: no response to request %d after %u ms, releasing queue", Ctx->owner, Ctx->waitId, now - waitStamp);
-					Ctx->waitId = lastWaitId = 0;
-					ProcessQueue(Ctx);
-				}
-			} else lastWaitId = 0;
 
 			pthread_mutex_unlock(&Ctx->Mutex);
 			last = now;
@@ -628,7 +613,7 @@ static void *CastSocketThread(void *args) {
 			if (!strcasecmp(str, "CLOSE")) {
 				// Connection closed by peer
 				Ctx->Status = CAST_CONNECTED;
-				Ctx->waitId = 0;
+				Ctx->waitId = Ctx->waitStamp = 0;
 				ProcessQueue(Ctx);
 				// VERSION_1_24
 				if (Ctx->stopReceiver) {
@@ -661,7 +646,7 @@ static void *CastSocketThread(void *args) {
 			if (Ctx->waitId && Ctx->waitId == requestId) {
 
 				// reset waitId, might be set below
-				Ctx->waitId = 0;
+				Ctx->waitId = Ctx->waitStamp = 0;
 
 				if (!strcasecmp(str,"RECEIVER_STATUS") && Ctx->Status == CAST_LAUNCHING) {
 					// receiver status before connection is fully established
@@ -704,6 +689,19 @@ static void *CastSocketThread(void *args) {
 
 				// must be done at the end, once all parameters have been acquired
 				if (!Ctx->waitId && Ctx->Status == CAST_LAUNCHED) ProcessQueue(Ctx);
+			}
+
+			// release the queue if the expected response never comes
+			if (!Ctx->waitId || Ctx->Status != CAST_LAUNCHED) {
+				Ctx->waitStamp = 0;
+			} else {
+				uint32_t now = gettime_ms();
+				if (!Ctx->waitStamp) Ctx->waitStamp = now;
+				else if (now - Ctx->waitStamp > WAIT_TIMEOUT) {
+					LOG_WARN("[%p]: no response to request %d, releasing queue", Ctx->owner, Ctx->waitId);
+					Ctx->waitId = Ctx->waitStamp = 0;
+					ProcessQueue(Ctx);
+				}
 			}
 
 			pthread_mutex_unlock(&Ctx->Mutex);
