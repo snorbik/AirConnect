@@ -1,6 +1,6 @@
 # AirCast (patched) – local test build
 
-aircast v1.12.5-snorbik6, built for aarch64 (static) from:
+aircast v1.12.5-snorbik7, built for aarch64 (static) from:
 
 - philippe44/AirConnect master af345de (1.12.5, not released yet)
   - volume timestamp wrap (#605)
@@ -18,3 +18,7 @@ aircast v1.12.5-snorbik6, built for aarch64 (static) from:
     ignored and speaker volume changes are not sent to the iPhone.
   - libraop: warning `no remote control known ..., dropping 'stop'` instead of
     silently dropping play/pause/stop when the iPhone's remote was not found.
+- local additions (snorbik7):
+  - on takeover, no `stop` is sent to the AirPlay sender any more: iOS delivers it
+    to the app playing on the phone, so Spotify moving from AirPlay to Cast arrived
+    paused. Yield alone prevents the fight.
