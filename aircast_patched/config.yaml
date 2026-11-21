@@ -1,0 +1,26 @@
+---
+name: AirCast (patched)
+version: 5.2.3-snorbik6
+slug: aircast_patched
+description: AirCast with upstream AirConnect master (1.12.5 pre-release) + local test fixes
+url: https://github.com/philippe44/AirConnect/issues/604
+startup: services
+init: false
+arch:
+  - aarch64
+hassio_api: true
+host_network: true
+map:
+  - addon_config:rw
+  - homeassistant_config:rw
+options:
+  latency_rtp: 2500
+  latency_http: 0
+  drift: true
+  log_level: info
+schema:
+  log_level: list(trace|debug|info|notice|warning|error|fatal)?
+  address: str?
+  latency_rtp: int
+  latency_http: int
+  drift: bool
