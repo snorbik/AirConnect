@@ -27,3 +27,6 @@ aircast v1.12.5-snorbik8, built for aarch64 (static) from:
     real AirPlay receiver). Before, only one RTSP connection was served and the
     second sender waited until it gave up. The current session is ended only when
     the new sender sends ANNOUNCE, so a probe does not interrupt playback.
+  - diagnostics in the log: `sender sent N ms of silence` (the iPhone kept sending
+    packets but they were silent) and `receiver is not reading` / `receiver reading
+    again after N ms` (the speaker stopped pulling the HTTP stream).
