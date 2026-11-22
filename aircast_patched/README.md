@@ -1,6 +1,6 @@
 # AirCast (patched) – local test build
 
-aircast v1.12.5-snorbik9, built for aarch64 (static) from:
+aircast v1.12.5-snorbik10, built for aarch64 (static) from:
 
 - philippe44/AirConnect master af345de (1.12.5, not released yet)
   - volume timestamp wrap (#605)
@@ -33,3 +33,6 @@ aircast v1.12.5-snorbik9, built for aarch64 (static) from:
 - local additions (snorbik9): finer diagnostics – `sender sent N ms of very quiet
   audio (peak P)` for stretches below -40 dBFS and an `audio level last 10 s` line,
   to tell a quiet recording from a speaker that mutes loud audio.
+- local additions (snorbik10): when the speaker stops on its own, the log says why
+  (`Cast stopped by other remote, reason FINISHED|CANCELLED|INTERRUPTED|ERROR`)
+  with the media status the speaker sent.
