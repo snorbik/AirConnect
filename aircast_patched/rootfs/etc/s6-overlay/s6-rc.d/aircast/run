@@ -58,6 +58,11 @@ if bashio::config.has_value 'http_mode'; then
     esac
 fi
 
+# Force the Cast receiver app (experiment: 46C1A819 instead of the default CC1AD845)
+if bashio::config.has_value 'receiver'; then
+    options+=(-R "$(bashio::config 'receiver')")
+fi
+
 # Drift mode?
 if bashio::config.true 'drift'; then
     options+=(-r)
