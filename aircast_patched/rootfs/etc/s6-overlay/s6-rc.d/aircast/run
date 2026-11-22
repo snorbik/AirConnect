@@ -45,6 +45,11 @@ fi
 # Set latency
 options+=(-l "$(bashio::config 'latency_rtp'):$(bashio::config 'latency_http')")
 
+# Audio format sent to the speakers (default flac from aircast.xml)
+if bashio::config.has_value 'codec'; then
+    options+=(-c "$(bashio::config 'codec')")
+fi
+
 # Drift mode?
 if bashio::config.true 'drift'; then
     options+=(-r)
