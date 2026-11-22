@@ -1,6 +1,6 @@
 # AirCast (patched) – local test build
 
-aircast v1.12.5-snorbik7, built for aarch64 (static) from:
+aircast v1.12.5-snorbik8, built for aarch64 (static) from:
 
 - philippe44/AirConnect master af345de (1.12.5, not released yet)
   - volume timestamp wrap (#605)
@@ -22,3 +22,8 @@ aircast v1.12.5-snorbik7, built for aarch64 (static) from:
   - on takeover, no `stop` is sent to the AirPlay sender any more: iOS delivers it
     to the app playing on the phone, so Spotify moving from AirPlay to Cast arrived
     paused. Yield alone prevents the fight.
+- local additions (snorbik8):
+  - libraop: a second AirPlay sender takes the speaker over (newest wins, like a
+    real AirPlay receiver). Before, only one RTSP connection was served and the
+    second sender waited until it gave up. The current session is ended only when
+    the new sender sends ANNOUNCE, so a probe does not interrupt playback.
