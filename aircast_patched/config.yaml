@@ -1,6 +1,6 @@
 ---
 name: AirCast (patched)
-version: 5.2.3-snorbik13
+version: 5.2.3-snorbik14
 slug: aircast_patched
 description: AirCast with upstream AirConnect master (1.12.5 pre-release) + local test fixes
 url: https://github.com/philippe44/AirConnect/issues/604
@@ -24,6 +24,6 @@ schema:
   latency_rtp: int
   latency_http: int
   drift: bool
-  codec: list(flac|wav|mp3)?
+  codec: list(flac|wav|mp3|mp3:320|aac|aac:256)?
   http_mode: list(default|chunked|length)?
   receiver: str?
