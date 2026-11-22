@@ -1,6 +1,6 @@
 # AirCast (patched) – local test build
 
-aircast v1.12.5-snorbik10 (add-on 5.2.3-snorbik11), built for aarch64 (static) from:
+aircast v1.12.5-snorbik11 (add-on 5.2.3-snorbik12), built for aarch64 (static) from:
 
 - philippe44/AirConnect master af345de (1.12.5, not released yet)
   - volume timestamp wrap (#605)
@@ -37,3 +37,4 @@ aircast v1.12.5-snorbik10 (add-on 5.2.3-snorbik11), built for aarch64 (static) f
   (`Cast stopped by other remote, reason FINISHED|CANCELLED|INTERRUPTED|ERROR`)
   with the media status the speaker sent.
 - add-on option `codec` (flac|wav|mp3): audio format sent to the speakers, passed as `-c`.
+- snorbik11/12: option `http_mode` – `default` (HTTP/1.0, no length), `chunked` (HTTP/1.1 chunked) or `length` (fake 2 GB Content-Length), passed as `-H`.

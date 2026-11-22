@@ -50,6 +50,14 @@ if bashio::config.has_value 'codec'; then
     options+=(-c "$(bashio::config 'codec')")
 fi
 
+# How the HTTP stream is sent to the speakers (experiment for Nest firmware 3.79.561352)
+if bashio::config.has_value 'http_mode'; then
+    case "$(bashio::config 'http_mode')" in
+        chunked) options+=(-H -3) ;;
+        length) options+=(-H 2000000000) ;;
+    esac
+fi
+
 # Drift mode?
 if bashio::config.true 'drift'; then
     options+=(-r)
