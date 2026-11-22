@@ -1,6 +1,6 @@
 # AirCast (patched) – local test build
 
-aircast v1.12.5-snorbik8, built for aarch64 (static) from:
+aircast v1.12.5-snorbik9, built for aarch64 (static) from:
 
 - philippe44/AirConnect master af345de (1.12.5, not released yet)
   - volume timestamp wrap (#605)
@@ -30,3 +30,6 @@ aircast v1.12.5-snorbik8, built for aarch64 (static) from:
   - diagnostics in the log: `sender sent N ms of silence` (the iPhone kept sending
     packets but they were silent) and `receiver is not reading` / `receiver reading
     again after N ms` (the speaker stopped pulling the HTTP stream).
+- local additions (snorbik9): finer diagnostics – `sender sent N ms of very quiet
+  audio (peak P)` for stretches below -40 dBFS and an `audio level last 10 s` line,
+  to tell a quiet recording from a speaker that mutes loud audio.

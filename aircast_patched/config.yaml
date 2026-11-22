@@ -1,6 +1,6 @@
 ---
 name: AirCast (patched)
-version: 5.2.3-snorbik8
+version: 5.2.3-snorbik9
 slug: aircast_patched
 description: AirCast with upstream AirConnect master (1.12.5 pre-release) + local test fixes
 url: https://github.com/philippe44/AirConnect/issues/604
